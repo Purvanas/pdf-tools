@@ -1,37 +1,47 @@
 # PDF Tools
 
-**Free online PDF tools** — Merge, sign, and split PDFs directly in your browser. No files are uploaded to any server.
+Une boîte à outils PDF légère qui fusionne, signe et extrait des pages sans envoyer les documents à un serveur.
 
-**[Use it now → pdf.purvanas.fr](https://pdf.purvanas.fr)**
+L'application est volontairement « buildless » : une page HTML, deux bibliothèques embarquées et un petit serveur Express pour les fichiers statiques, les compteurs agrégés et le signalement de bugs. Les PDF restent dans le navigateur ; `pdf-lib` réalise les modifications et PDF.js ne sert qu'au rendu des aperçus.
 
-## Tools
+## Fonctions principales
 
-### Merge PDFs
-Combine multiple PDF files into one. Drag & drop, reorder pages, download the merged result.
+- fusion de plusieurs PDF avec réorganisation par glisser-déposer ;
+- signature dessinée ou importée, positionnable sur la page choisie ;
+- extraction d'une sélection de pages (`1-3, 7, 10-12`) avec validation stricte ;
+- aperçu borné pour que les très longs documents ne créent pas des milliers de nœuds dans la page ;
+- traitement et téléchargement locaux, y compris pour les documents sensibles.
 
-### Sign PDFs
-Upload a PDF and a signature image (or draw your signature). Click to place your signature on any page, resize it, then download the signed PDF.
+## Architecture et sécurité
 
-### Split PDFs
-Extract specific pages from a PDF. Enter page ranges (e.g., "1-3, 5, 8-10") and download only the pages you need.
+Le navigateur charge les fichiers avec les API `File`/`ArrayBuffer`. Aucun contenu PDF ne traverse l'API du projet. PDF.js est appelé avec `isEvalSupported: false` et `enableScripting: false`, ce qui désactive les vecteurs d'évaluation dynamique et de script pour les documents non fiables. Le bundle 3.11.174 reste ancien : sa montée de version est recommandée avant toute évolution importante.
 
-## Privacy
+Le serveur ne conserve que des compteurs agrégés et, si l'utilisateur l'envoie explicitement, un rapport de bug borné. La lecture de ces rapports est fermée tant que `ERRORS_TOKEN` n'est pas configuré, puis exige `Authorization: Bearer …`.
 
-**All processing happens in your browser.** Your PDF files are never sent to a server. We use [pdf-lib](https://github.com/Hopding/pdf-lib) for PDF manipulation and [pdf.js](https://github.com/nicknisi/pdfjs) for rendering — both run 100% client-side.
+## Lancer le projet
 
-## Tech Stack
+Prérequis : Node.js 22 ou 24.
 
-- **PDF manipulation**: pdf-lib (client-side)
-- **PDF rendering**: pdf.js (client-side)
-- **Server**: Express (serves static files only — no PDF processing)
-- **Hosting**: Self-hosted on Ubuntu Server
+```bash
+cp .env.example .env
+npm ci
+npm start
+```
 
-## License
+Le service écoute par défaut sur `http://127.0.0.1:4000`. Pour charger explicitement le fichier d'environnement sans npm :
 
-MIT
+```bash
+node --env-file=.env server.js
+```
 
-## Links
+En production, gardez l'écoute en loopback et publiez le service derrière un reverse proxy HTTPS. Les fichiers `stats.json` et `errors.json` sont des données d'exécution : ils ne doivent pas être versionnés.
 
-- **Live demo**: [pdf.purvanas.fr](https://pdf.purvanas.fr)
-- **Author**: [Purvanas](https://purvanas.fr)
-- **Other tools**: [Universal Downloader](https://dl.purvanas.fr) · [Converter](https://convert.purvanas.fr) · [QR Generator](https://qr.purvanas.fr) · [FileDrop](https://drop.purvanas.fr) · [Remove Background](https://bg.purvanas.fr)
+## Limites assumées
+
+- ce n'est pas un éditeur PDF complet (OCR, formulaires complexes, chiffrement et réparation ne sont pas couverts) ;
+- les fichiers très volumineux restent limités par la mémoire disponible dans le navigateur ;
+- la signature est une annotation visuelle, pas une signature électronique qualifiée.
+
+## Licence
+
+Le code propre au projet est distribué sous licence MIT. Les bundles tiers embarqués gardent leurs licences respectives ; voir [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
