@@ -16,7 +16,7 @@ L'application est volontairement « buildless » : une page HTML, deux biblioth�
 
 ## Architecture et sécurité
 
-Le navigateur charge les fichiers avec les API `File`/`ArrayBuffer`. Aucun contenu PDF ne traverse l'API du projet. PDF.js est appelé avec `isEvalSupported: false` et `enableScripting: false`, ce qui désactive les vecteurs d'évaluation dynamique et de script pour les documents non fiables. Le bundle 3.11.174 reste ancien : sa montée de version est recommandée avant toute évolution importante.
+Le navigateur charge les fichiers avec les API `File`/`ArrayBuffer`. Aucun contenu PDF ne traverse l'API du projet. L'option `isEvalSupported: false` applique le contournement officiel de CVE-2024-4367 dans PDF.js. L'application utilise le rendu canvas et n'instancie pas le gestionnaire de scripts du viewer PDF.js. L'option supplémentaire `enableScripting` n'est pas une garantie fournie par `getDocument` dans cette version. Le bundle 3.11.174 reste ancien : sa montée de version reste une évolution à prévoir.
 
 Le serveur ne conserve que des compteurs agrégés et, si l'utilisateur l'envoie explicitement, un rapport de bug borné. La lecture de ces rapports est fermée tant que `ERRORS_TOKEN` n'est pas configuré, puis exige `Authorization: Bearer …`.
 
