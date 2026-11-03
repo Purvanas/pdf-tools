@@ -1,5 +1,7 @@
 # PDF Tools
 
+**[Démo en ligne](https://pdf.purvanas.fr)** · [Contrôles GitHub](https://github.com/Purvanas/pdf-tools/actions)
+
 Une boîte à outils PDF légère qui fusionne, signe et extrait des pages sans envoyer les documents à un serveur.
 
 L'application est volontairement « buildless » : une page HTML, deux bibliothèques embarquées et un petit serveur Express pour les fichiers statiques, les compteurs agrégés et le signalement de bugs. Les PDF restent dans le navigateur ; `pdf-lib` réalise les modifications et PDF.js ne sert qu'au rendu des aperçus.
