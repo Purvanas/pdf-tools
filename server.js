@@ -64,7 +64,16 @@ function logError(type, error, extra) {
 app.post("/api/report-bug", (req, res) => {
   const { error, comment, activityLog, userAgent } = req.body || {};
   const cleanLog = Array.isArray(activityLog)
-    ? activityLog.slice(-30).map((item) => String(item).substring(0, 300))
+    ? activityLog.slice(-30).map((item) => {
+      if (item && typeof item === "object" && !Array.isArray(item)) {
+        return {
+          t: String(item.t || "").slice(0, 40),
+          a: String(item.a || "").slice(0, 80),
+          d: String(item.d || "").slice(0, 300),
+        };
+      }
+      return String(item).slice(0, 300);
+    })
     : [];
   logError("user-report", error || "No error", {
     comment: String(comment || "").substring(0, 500),
