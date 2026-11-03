@@ -1,0 +1,19 @@
+{
+  "name": "pdf-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fusion, signature et extraction de pages PDF directement dans le navigateur",
+  "main": "server.js",
+  "scripts": {
+    "test": "node --test",
+    "start": "node --env-file-if-exists=.env server.js"
+  },
+  "keywords": ["pdf", "browser", "privacy"],
+  "author": "Purvanas",
+  "license": "MIT",
+  "engines": { "node": "^22.0.0 || ^24.0.0" },
+  "type": "commonjs",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

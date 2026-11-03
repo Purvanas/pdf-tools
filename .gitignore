@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+errors.json
+stats.json
+reports.json
+*.tmp
+*.log
+coverage/
+.nyc_output/
+.DS_Store
+Thumbs.db
